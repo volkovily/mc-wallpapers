@@ -1,0 +1,19 @@
+{
+  "name": "mc-wallpapers",
+  "version": "1.0.0",
+  "description": "Minecraft Wallpapers",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/volkovily/mc-wallpapers.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/volkovily/mc-wallpapers/issues"
+  },
+  "homepage": "https://github.com/volkovily/mc-wallpapers#readme"
+}
