@@ -3,8 +3,10 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 fileInput.addEventListener("change", () => {
-  const file = fileInput.files[0];
-  const reader = new FileReader();
+  const files = fileInput.files;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const reader = new FileReader();
 
   reader.onload = () => {
     const img = new Image();
@@ -16,4 +18,5 @@ fileInput.addEventListener("change", () => {
     img.src = reader.result;
   };
   reader.readAsDataURL(file);
+  }
 });
