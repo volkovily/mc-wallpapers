@@ -3,27 +3,51 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 let images = {};
+let skin = new Image();
+skin.src = "src/img/steve_new.png";
 
 fileInput.addEventListener("change", () => {
   const files = fileInput.files;
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const reader = new FileReader();
-
-  reader.onload = () => {
     let img = new Image();
     let name = file.name.replace(".png", "");
     images[name] = img;
     img.src = URL.createObjectURL(file);
     img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
+      compose();
     };
-  };
-  reader.readAsDataURL(file);
   }
 });
+
+//change to accept any image name
+function compose() {
+  let container = document.createElement("div");
+  for (let name in images) container.appendChild(images[name]);
+
+  merge(
+    images.player,
+    skin,
+    images.background,
+    renderWallpaper
+  );
+}
+
+function renderWallpaper(player) {
+  canvas.width = images.background.width;
+  canvas.height = images.background.height;
+  ctx.drawImage(images.background, 0, 0);
+  ctx.drawImage(player, 0, 0);
+}
+
+function merge(uvmap, skin, background, onRender) {
+  let caman = Caman(uvmap, function () {
+    this.remap(skin, uvmap.u || "r", uvmap.v || "g");
+    this.render(function () {
+      onRender(caman.canvas);
+    });
+  });
+}
 
 Caman.Filter.register("remap", function (image, uChannel, vChannel) {
   let pixelData = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height).data;
