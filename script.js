@@ -62,9 +62,13 @@ Caman.Filter.register("remap", function (image, uChannel, vChannel) {
 });
 
 function resizeSkin(image, factor) {
+  let canvas = document.createElement("canvas")
+  let ctx = canvas.getContext("2d");
+
   canvas.width = image.width * factor;
   canvas.height = canvas.width;
 
+  ctx.imageSmoothingEnabled = false;
   ctx.scale(factor, factor);
   ctx.drawImage(image, 0, 0);
   return canvas;
