@@ -6,6 +6,16 @@ let images = {};
 let skin = new Image();
 skin.src = "src/img/steve_new.png";
 
+const playerNameButton = document.getElementById("getSkinBtn");
+playerNameButton.addEventListener("click", () => {
+  playerName = prompt("Enter username:");
+  skin.src = `https://mineskin.eu/skin/${playerName}`;
+  skin.crossOrigin = "anonymous";
+  skin.onload = () => {
+    compose();
+  };
+});
+
 fileInput.addEventListener("change", () => {
   const files = fileInput.files;
   for (let i = 0; i < files.length; i++) {
