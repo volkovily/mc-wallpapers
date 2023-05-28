@@ -1,6 +1,10 @@
-const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+const fileInputs = [
+  { id: "backgroundInput", name: "background" },
+  { id: "playerInput", name: "player" },
+];
 
 let images = {};
 let skin = new Image();
@@ -39,21 +43,20 @@ async function getUUID(username) {
   }
 }
 
-fileInput.addEventListener("change", () => {
-  const files = fileInput.files;
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
+fileInputs.forEach(({ id, name }) => {
+  const fileInput = document.getElementById(id);
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
     let img = new Image();
-    let name = file.name.replace(".png", "");
     images[name] = img;
     img.src = URL.createObjectURL(file);
     img.onload = () => {
       compose();
     };
-  }
+    file.name = name;
+  });
 });
 
-//change to accept any image name
 function compose() {
   let container = document.createElement("div");
   for (let name in images) container.appendChild(images[name]);
