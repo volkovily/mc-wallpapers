@@ -58,7 +58,7 @@ function compose() {
   let container = document.createElement("div");
   for (let name in images) container.appendChild(images[name]);
 
-  merge(images.player, skin, images.background, renderWallpaper);
+  merge(images.player, skin, renderWallpaper);
 }
 
 function renderWallpaper(player) {
@@ -68,7 +68,7 @@ function renderWallpaper(player) {
   ctx.drawImage(player, 0, 0);
 }
 
-function merge(uvmap, skin, background, onRender) {
+function merge(uvmap, skin, onRender) {
   let caman = Caman(uvmap, function () {
     this.remap(skin, uvmap.u || "r", uvmap.v || "g");
     this.render(function () {
