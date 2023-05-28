@@ -9,19 +9,35 @@ skin.src = "src/img/steve_new.png";
 const playerNameButton = document.getElementById("getSkinBtn");
 playerNameButton.addEventListener("click", () => {
   playerName = prompt("Enter username:");
-  skin.src = `https://visage.surgeplay.com/skin/${playerName}`;
-  skin.crossOrigin = "anonymous";
-  skin.onload = () => {
-    if (skin.height == 32) {
-      skin.src = `https://visage.surgeplay.com/processedskin/${playerName}`;
-      skin.onload = () => {
+  getUUID(playerName).then((uuid) => {
+    skin.src = `https://visage.surgeplay.com/skin/${uuid}`;
+    skin.crossOrigin = "anonymous";
+    skin.onload = () => {
+      if (skin.height == 32) {
+        skin.src = `https://visage.surgeplay.com/processedskin/${uuid}`;
+        skin.onload = () => {
+          compose();
+        };
+      } else {
         compose();
-      };
-    } else {
-      compose();
-    }
-  };
+      }
+    };
+  });
 });
+
+async function getUUID(username) {
+  const url = `https://api.ashcon.app/mojang/v2/user/${username}`;
+  try {
+    const response = await fetch(url);
+    if (response.status === 404) {
+      throw new Error("No player found for: " + username);
+    }
+    const data = await response.json();
+    return data.uuid;
+  } catch (err) {
+    throw err;
+  }
+}
 
 fileInput.addEventListener("change", () => {
   const files = fileInput.files;
@@ -42,12 +58,7 @@ function compose() {
   let container = document.createElement("div");
   for (let name in images) container.appendChild(images[name]);
 
-  merge(
-    images.player,
-    skin,
-    images.background,
-    renderWallpaper
-  );
+  merge(images.player, skin, images.background, renderWallpaper);
 }
 
 function renderWallpaper(player) {
@@ -68,7 +79,9 @@ function merge(uvmap, skin, background, onRender) {
 
 Caman.Filter.register("remap", function (image, uChannel, vChannel) {
   let canvas = resizeSkin(image, 256 / image.width);
-  let pixelData = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height).data;
+  let pixelData = canvas
+    .getContext("2d")
+    .getImageData(0, 0, canvas.width, canvas.height).data;
   this.process("remap", function (rgba) {
     let location = (rgba[vChannel] * canvas.width + rgba[uChannel]) * 4;
     rgba.r = (rgba.a * pixelData[location + 0]) / 255;
@@ -79,7 +92,7 @@ Caman.Filter.register("remap", function (image, uChannel, vChannel) {
 });
 
 function resizeSkin(image, factor) {
-  let canvas = document.createElement("canvas")
+  let canvas = document.createElement("canvas");
   let ctx = canvas.getContext("2d");
 
   canvas.width = image.width * factor;
