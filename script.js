@@ -9,10 +9,17 @@ skin.src = "src/img/steve_new.png";
 const playerNameButton = document.getElementById("getSkinBtn");
 playerNameButton.addEventListener("click", () => {
   playerName = prompt("Enter username:");
-  skin.src = `https://mineskin.eu/skin/${playerName}`;
+  skin.src = `https://visage.surgeplay.com/skin/${playerName}`;
   skin.crossOrigin = "anonymous";
   skin.onload = () => {
-    compose();
+    if (skin.height == 32) {
+      skin.src = `https://visage.surgeplay.com/processedskin/${playerName}`;
+      skin.onload = () => {
+        compose();
+      };
+    } else {
+      compose();
+    }
   };
 });
 
