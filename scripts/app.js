@@ -36,12 +36,14 @@ fileInputs.forEach(({ id, name }) => {
   const fileInput = document.getElementById(id);
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
-    let img = new Image();
-    images[name] = img;
-    img.src = URL.createObjectURL(file);
-    img.onload = () => {
-      compose();
-    };
+    if (file) {
+      let img = new Image();
+      images[name] = img;
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        compose();
+      };
+    }
   });
 });
 
