@@ -13,6 +13,8 @@ let images = {};
 let skin = new Image();
 skin.src = "src/img/steve_new.png";
 
+const OLD_FORMAT_HEIGHT = 32;
+
 const playerNameButton = document.getElementById("getSkinBtn");
 playerNameButton.addEventListener("click", () => {
   let playerName = prompt("Enter username:");
@@ -20,7 +22,7 @@ playerNameButton.addEventListener("click", () => {
     skin.src = `https://visage.surgeplay.com/skin/${uuid}`;
     skin.crossOrigin = "anonymous";
     skin.onload = () => {
-      if (skin.height == 32) {
+      if (skin.height == OLD_FORMAT_HEIGHT) {
         skin.src = `https://visage.surgeplay.com/processedskin/${uuid}`;
         skin.onload = () => {
           compose();
