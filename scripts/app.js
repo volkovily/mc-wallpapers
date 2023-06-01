@@ -17,24 +17,45 @@ const OLD_FORMAT_HEIGHT = 32;
 
 const playerNameButton = document.getElementById("getSkinBtn");
 const playerNameInput = document.getElementById("playerNameInput");
+const skinHistoryContainer = document.getElementById("skinHistoryContainer");
 
 playerNameButton.addEventListener("click", () => {
-let playerName = playerNameInput.value;
-  getUUID(playerName).then((uuid) => {
-    skin.src = `https://visage.surgeplay.com/skin/${uuid}`;
-    skin.crossOrigin = "anonymous";
-    skin.onload = () => {
-      if (skin.height == OLD_FORMAT_HEIGHT) {
-        skin.src = `https://visage.surgeplay.com/processedskin/${uuid}`;
-        skin.onload = () => {
-          compose();
-        };
-      } else {
-        compose();
-      }
-    };
-  });
+  let playerName = playerNameInput.value;
+  if (playerName.trim() !== "") {
+    getUUID(playerName).then((uuid) => {
+      loadSkin(uuid);
+      addSkinToHistory(uuid);
+    });
+  }
 });
+
+function loadSkin(uuid) {
+  skin.src = `https://visage.surgeplay.com/skin/${uuid}`;
+  skin.crossOrigin = "anonymous";
+  skin.onload = () => {
+    if (skin.height === OLD_FORMAT_HEIGHT) {
+      skin.src = `https://visage.surgeplay.com/processedskin/${uuid}`;
+      skin.onload = () => {
+        compose();
+      };
+    } else {
+      compose();
+    }
+  };
+}
+
+function addSkinToHistory(uuid) {
+  const historyItem = document.createElement("div");
+  historyItem.classList.add("history-item");
+  const skinPreviewBtn = document.createElement("button");
+  skinPreviewBtn.classList.add("skin-preview-button");
+  skinPreviewBtn.style.backgroundImage = `url(https://visage.surgeplay.com/front/128/${uuid})`;
+  skinPreviewBtn.addEventListener("click", () => {
+    loadSkin(uuid);
+  });
+  historyItem.appendChild(skinPreviewBtn);
+  skinHistoryContainer.appendChild(historyItem);
+}
 
 fileInputs.forEach(({ id, name }) => {
   const fileInput = document.getElementById(id);
