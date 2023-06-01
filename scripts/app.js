@@ -36,6 +36,8 @@ playerNameButton.addEventListener("click", () => {
 
 fileInputs.forEach(({ id, name }) => {
   const fileInput = document.getElementById(id);
+  const label = document.querySelector(`label[for="${id}"]`);
+
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (file) {
@@ -44,6 +46,8 @@ fileInputs.forEach(({ id, name }) => {
       img.src = URL.createObjectURL(file);
       img.onload = () => {
         compose();
+        label.classList.add('loaded');
+        label.querySelector('.button-icon').innerHTML = '✓';
       };
     }
   });
