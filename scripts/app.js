@@ -18,6 +18,7 @@ const OLD_FORMAT_HEIGHT = 32;
 const playerNameButton = document.getElementById("getSkinBtn");
 const playerNameInput = document.getElementById("playerNameInput");
 const skinHistoryContainer = document.getElementById("skinHistoryContainer");
+const skinHistoryMap = new Map();
 
 playerNameButton.addEventListener("click", () => {
   let playerName = playerNameInput.value;
@@ -45,6 +46,10 @@ function loadSkin(uuid) {
 }
 
 function addSkinToHistory(uuid) {
+  if (skinHistoryMap.has(uuid)) {
+    const existingItem = skinHistoryMap.get(uuid);
+    skinHistoryContainer.insertBefore(existingItem, skinHistoryContainer.firstChild);
+  } else {
   const historyItem = document.createElement("div");
   historyItem.classList.add("history-item");
   const skinPreviewBtn = document.createElement("button");
@@ -55,6 +60,9 @@ function addSkinToHistory(uuid) {
   });
   historyItem.appendChild(skinPreviewBtn);
   skinHistoryContainer.insertBefore(historyItem, skinHistoryContainer.firstChild);
+    
+    skinHistoryMap.set(uuid, historyItem);
+  }
 }
 
 fileInputs.forEach(({ id, name }) => {
