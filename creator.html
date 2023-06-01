@@ -6,10 +6,16 @@
 </head>
 <body>
     <h1>mc-wallpaper</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="playerInput" name="player" accept="image/*">
-        <input type="file" id="backgroundInput" name="background" accept="image/*">
-    </form>
+    <div id="button-container">
+        <label for="playerInput" class="custom-file-input" title="Import player">
+            <span class="button-icon">+</span>
+        </label>
+        <input type="file" id="playerInput" name="player" accept="image/*" class="file-input">
+        <label for="backgroundInput" class="custom-file-input" title="Import background">
+            <span class="button-icon">+</span>
+        </label>
+        <input type="file" id="backgroundInput" name="background" accept="image/*" class="file-input">
+    </div>
     <button id="getSkinBtn">Enter username</button>
     <div id="canvasContainer">
         <canvas id="canvas"></canvas>
