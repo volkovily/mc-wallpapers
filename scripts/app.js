@@ -54,7 +54,7 @@ function addSkinToHistory(uuid) {
     loadSkin(uuid);
   });
   historyItem.appendChild(skinPreviewBtn);
-  skinHistoryContainer.appendChild(historyItem);
+  skinHistoryContainer.insertBefore(historyItem, skinHistoryContainer.firstChild);
 }
 
 fileInputs.forEach(({ id, name }) => {
