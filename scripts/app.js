@@ -46,6 +46,9 @@ function loadSkin(uuid) {
 }
 
 function addSkinToHistory(uuid) {
+    if (!uuid) {
+    return;
+  }
   if (skinHistoryMap.has(uuid)) {
     const existingItem = skinHistoryMap.get(uuid);
     skinHistoryContainer.insertBefore(existingItem, skinHistoryContainer.firstChild);
