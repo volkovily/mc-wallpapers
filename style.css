@@ -3,6 +3,7 @@ body {
 }
 
 #canvasContainer {
+  position: relative;
   border: 2px solid black;
   width: 640px;
   height: 360px;
@@ -59,4 +60,39 @@ h1 {
 
 .custom-file-input.loaded {
   background-color: #008000;
+}
+
+#menu {
+  position: absolute;
+  left: -39%;
+  top: 35%;
+  transform: translateY(-50%);
+  border: 2px solid black;
+  background-color: #f5f5f5;
+  width: 200px;
+  padding: 20px;
+}
+
+#playerNameInput {
+  flex: 1;
+  padding: 5px;
+  margin-right: 5px;
+}
+
+#getSkinBtn {
+  width: 30px;
+  font-size: 20px;
+}
+
+#enterBtn:hover {
+  background-color: #006400;
+}
+
+#skinMenu {
+  margin-top: 10px;
+}
+
+#skinMenu img {
+  display: block;
+  margin-bottom: 5px;
 }

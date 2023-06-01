@@ -16,8 +16,10 @@ skin.src = "src/img/steve_new.png";
 const OLD_FORMAT_HEIGHT = 32;
 
 const playerNameButton = document.getElementById("getSkinBtn");
+const playerNameInput = document.getElementById("playerNameInput");
+
 playerNameButton.addEventListener("click", () => {
-  let playerName = prompt("Enter username:");
+let playerName = playerNameInput.value;
   getUUID(playerName).then((uuid) => {
     skin.src = `https://visage.surgeplay.com/skin/${uuid}`;
     skin.crossOrigin = "anonymous";
