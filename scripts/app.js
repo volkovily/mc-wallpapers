@@ -7,6 +7,7 @@ const ctx = canvas.getContext("2d");
 const fileInputs = [
   { id: "backgroundInput", name: "background" },
   { id: "playerInput", name: "player" },
+  { id: "hatInput", name: "hat" }
 ];
 
 let images = {};
@@ -91,7 +92,20 @@ function compose() {
   let container = document.createElement("div");
   for (let name in images) container.appendChild(images[name]);
 
-  merge(images.player, skin, renderWallpaper);
+  combine(images.player, images.hat, skin, function (player, hat) {
+    renderWallpaper(player);
+    if (hat) {
+      ctx.drawImage(hat, 0, 0);
+    }
+  });
+}
+
+function combine(img1, img2, skin, callback) {
+  merge(img1, skin, function (player) {
+    merge(img2, skin, function (hat) {
+      callback(player, hat);
+    });
+  });
 }
 
 function renderWallpaper(player) {
