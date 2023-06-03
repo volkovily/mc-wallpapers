@@ -17,7 +17,7 @@ skin.src = "src/img/steve_new.png";
 const OLD_FORMAT_HEIGHT = 32;
 
 const mojangSkinButton = document.getElementById("getMojangSkinBtn");
-const tlSkinButton = document.getElementById("getTLSkinBtn");
+const skinInput = document.getElementById("skinInput");
 const playerNameInput = document.getElementById("playerNameInput");
 const skinHistoryContainer = document.getElementById("skinHistoryContainer");
 const skinHistoryMap = new Map();
@@ -32,11 +32,14 @@ mojangSkinButton.addEventListener("click", () => {
   }
 });
 
-tlSkinButton.addEventListener("click", () => {
-  let playerName = playerNameInput.value;
-  if (playerName.trim() !== "") {
-    loadTLSkin(playerName);
-  }
+skinInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    skin.src = event.target.result;
+    compose();
+  };
+  reader.readAsDataURL(file);
 });
 
 function loadMojangSkin(uuid) {
@@ -51,14 +54,6 @@ function loadMojangSkin(uuid) {
     } else {
       compose();
     }
-  };
-}
-
-function loadTLSkin(playerName) {
-  skin.src = `https://auth.tlauncher.org/skin/fileservice/skins/skin_${playerName}.png`;
-  skin.crossOrigin = "anonymous";
-  skin.onload = () => {
-    compose();
   };
 }
 
