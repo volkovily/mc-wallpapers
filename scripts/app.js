@@ -10,8 +10,8 @@ const fileInputs = [
   { id: "hatInput", name: "hat" }
 ];
 
-let images = {};
-let skin = new Image();
+const images = {};
+const skin = new Image();
 skin.src = "src/img/steve_new.png";
 
 const OLD_FORMAT_HEIGHT = 32;
@@ -23,7 +23,7 @@ const skinHistoryContainer = document.getElementById("skinHistoryContainer");
 const skinHistoryMap = new Map();
 
 mojangSkinButton.addEventListener("click", () => {
-  let playerName = playerNameInput.value;
+  const playerName = playerNameInput.value;
   if (playerName.trim() !== "") {
     getUUID(playerName).then((uuid) => {
       loadMojangSkin(uuid);
@@ -87,7 +87,7 @@ fileInputs.forEach(({ id, name }) => {
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (file) {
-      let img = new Image();
+      const img = new Image();
       images[name] = img;
       img.src = URL.createObjectURL(file);
       img.onload = () => {
@@ -100,7 +100,7 @@ fileInputs.forEach(({ id, name }) => {
 });
 
 function compose() {
-  let container = document.createElement("div");
+  const container = document.createElement("div");
   for (let name in images) container.appendChild(images[name]);
 
   combine(images.player, images.hat, skin, function (player, hat) {
