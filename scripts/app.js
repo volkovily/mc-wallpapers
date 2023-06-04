@@ -58,7 +58,6 @@ function loadMojangSkin(uuid) {
 
 fileInputs.forEach(({ id, name }) => {
   const fileInput = document.getElementById(id);
-  const label = document.querySelector(`label[for="${id}"]`);
 
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
@@ -73,6 +72,23 @@ fileInputs.forEach(({ id, name }) => {
   });
 });
 
+function checkImageSize(images, backgroundWidth, backgroundHeight) {
+  for (let name in images) {
+    const img = images[name];
+    if (img.width !== backgroundWidth || img.height !== backgroundHeight) {
+      alert(`Error: "${name}" must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
+      return false;
+    }
+  }
+  return true;
+}
+
+function addCheckToButton(name) {
+  const label = document.querySelector(`label[for="${name}Input"]`);
+  label.classList.add('loaded');
+  label.querySelector('.button-icon').innerHTML = '✓';
+}
+
 function compose() {
   const container = document.createElement("div");
   for (let name in images) container.appendChild(images[name]);
@@ -81,20 +97,11 @@ function compose() {
   const backgroundWidth = background.width;
   const backgroundHeight = background.height;
 
-  let allImagesCorrectSize = true;
-  for (let name in images) {
-    const img = images[name];
-    if (img.width !== backgroundWidth || img.height !== backgroundHeight) {
-      alert(`Error: "${name}" must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
-      break;
-    }
-  }
+  let allImagesCorrectSize = checkImageSize(images, backgroundWidth, backgroundHeight);
 
   if (allImagesCorrectSize) {
     for (let name in images) {
-      const label = document.querySelector(`label[for="${name}Input"]`);
-      label.classList.add('loaded');
-      label.querySelector('.button-icon').innerHTML = '✓';
+      addCheckToButton(name);
     }
 
     combine(images.player, images.hat, skin, function (player, hat) {
