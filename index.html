@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>mc-wallpaper</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
     <h1>mc-wallpaper</h1>
     <div id="button-container">
-        <label for="playerInput" class="custom-file-input" title="Import player">
-            <span class="button-icon">+</span>
-        </label>
-        <input type="file" id="playerInput" name="player" accept="image/*" class="file-input">
-        <label for="backgroundInput" class="custom-file-input" title="Import background">
-            <span class="button-icon">+</span>
-        </label>
-        <input type="file" id="backgroundInput" name="background" accept="image/*" class="file-input">
-        <label for="hatInput" class="custom-file-input" title="Import hat">
-          <span class="button-icon">+</span>
-        </label>
-      <input type="file" id="hatInput" name="hat" accept="image/*" class="file-input">
+      <label for="backgroundInput" class="custom-file-input" title="Import background">
+        <span class="button-icon">+</span>
+      </label>
+      <input type="file" id="backgroundInput" name="background" accept="image/*" class="file-input" />
+      <label for="playerInput" class="custom-file-input" title="Import player">
+        <span class="button-icon">+</span>
+      </label>
+      <input type="file" id="playerInput" name="player" accept="image/*" class="file-input" />
+      <label for="hatInput" class="custom-file-input" title="Import hat">
+        <span class="button-icon">+</span>
+      </label>
+      <input type="file" id="hatInput" name="hat" accept="image/*" class="file-input" />
     </div>
     <div id="canvasContainer">
-        <div id="menu">
-            <input type="text" id="playerNameInput" placeholder="Enter username" />
-              <button id="getMojangSkinBtn" class="skin-button">></button>
-              <input type="file" id="skinInput" class="skin-input">
-            <div id="skinHistoryContainer"></div>
-          </div>
-        <canvas id="canvas"></canvas>
+      <div id="menu">
+        <input type="text" id="playerNameInput" placeholder="Enter username" />
+        <button id="getMojangSkinBtn" class="skin-button">></button>
+        <input type="file" id="skinInput" class="skin-input" />
+        <div id="skinHistoryContainer"></div>
+      </div>
+      <canvas id="canvas"></canvas>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
     <script type="module" src="scripts/app.js"></script>
-</body>
+  </body>
 </html>

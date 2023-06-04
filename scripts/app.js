@@ -1,5 +1,6 @@
 import { merge } from "./imageUtils.js";
 import { getUUID } from "./uuid.js";
+import { addSkinToHistory } from "./skinHistory.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -19,15 +20,13 @@ const OLD_FORMAT_HEIGHT = 32;
 const mojangSkinButton = document.getElementById("getMojangSkinBtn");
 const skinInput = document.getElementById("skinInput");
 const playerNameInput = document.getElementById("playerNameInput");
-const skinHistoryContainer = document.getElementById("skinHistoryContainer");
-const skinHistoryMap = new Map();
 
 mojangSkinButton.addEventListener("click", () => {
   const playerName = playerNameInput.value;
   if (playerName.trim() !== "") {
     getUUID(playerName).then((uuid) => {
       loadMojangSkin(uuid);
-      addSkinToHistory(uuid);
+      addSkinToHistory(uuid, loadMojangSkin);
     });
   }
 });
@@ -57,32 +56,8 @@ function loadMojangSkin(uuid) {
   };
 }
 
-function addSkinToHistory(uuid) {
-  if (!uuid) {
-    return;
-  }
-  if (skinHistoryMap.has(uuid)) {
-    const existingItem = skinHistoryMap.get(uuid);
-    skinHistoryContainer.insertBefore(existingItem, skinHistoryContainer.firstChild);
-  } else {
-    const historyItem = document.createElement("div");
-    historyItem.classList.add("history-item");
-    const skinPreviewBtn = document.createElement("button");
-    skinPreviewBtn.classList.add("skin-preview-button");
-    skinPreviewBtn.style.backgroundImage = `url(https://visage.surgeplay.com/front/128/${uuid})`;
-    skinPreviewBtn.addEventListener("click", () => {
-      loadMojangSkin(uuid);
-    });
-    historyItem.appendChild(skinPreviewBtn);
-    skinHistoryContainer.insertBefore(historyItem, skinHistoryContainer.firstChild);
-
-    skinHistoryMap.set(uuid, historyItem);
-  }
-}
-
 fileInputs.forEach(({ id, name }) => {
   const fileInput = document.getElementById(id);
-  const label = document.querySelector(`label[for="${id}"]`);
 
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
@@ -92,23 +67,50 @@ fileInputs.forEach(({ id, name }) => {
       img.src = URL.createObjectURL(file);
       img.onload = () => {
         compose();
-        label.classList.add('loaded');
-        label.querySelector('.button-icon').innerHTML = '✓';
       };
     }
   });
 });
 
+function checkImageSize(images, backgroundWidth, backgroundHeight) {
+  for (let name in images) {
+    const img = images[name];
+    if (img.width !== backgroundWidth || img.height !== backgroundHeight) {
+      alert(`Error: "${name}" must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
+      return false;
+    }
+  }
+  return true;
+}
+
+function addCheckToButton(name) {
+  const label = document.querySelector(`label[for="${name}Input"]`);
+  label.classList.add('loaded');
+  label.querySelector('.button-icon').innerHTML = '✓';
+}
+
 function compose() {
   const container = document.createElement("div");
   for (let name in images) container.appendChild(images[name]);
 
-  combine(images.player, images.hat, skin, function (player, hat) {
-    renderWallpaper(player);
-    if (hat) {
-      ctx.drawImage(hat, 0, 0);
+  const background = images.background;
+  const backgroundWidth = background.width;
+  const backgroundHeight = background.height;
+
+  let allImagesCorrectSize = checkImageSize(images, backgroundWidth, backgroundHeight);
+
+  if (allImagesCorrectSize) {
+    for (let name in images) {
+      addCheckToButton(name);
     }
-  });
+
+    combine(images.player, images.hat, skin, function (player, hat) {
+      renderWallpaper(player);
+      if (hat) {
+        ctx.drawImage(hat, 0, 0);
+      }
+    });
+  }
 }
 
 function combine(img1, img2, skin, callback) {
