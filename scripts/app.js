@@ -68,8 +68,6 @@ fileInputs.forEach(({ id, name }) => {
       img.src = URL.createObjectURL(file);
       img.onload = () => {
         compose();
-        label.classList.add('loaded');
-        label.querySelector('.button-icon').innerHTML = '✓';
       };
     }
   });
@@ -83,20 +81,29 @@ function compose() {
   const backgroundWidth = background.width;
   const backgroundHeight = background.height;
 
+  let allImagesCorrectSize = true;
   for (let name in images) {
     const img = images[name];
     if (img.width !== backgroundWidth || img.height !== backgroundHeight) {
       alert(`Error: "${name}" must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
-      return;
+      break;
     }
   }
 
-  combine(images.player, images.hat, skin, function (player, hat) {
-    renderWallpaper(player);
-    if (hat) {
-      ctx.drawImage(hat, 0, 0);
+  if (allImagesCorrectSize) {
+    for (let name in images) {
+      const label = document.querySelector(`label[for="${name}Input"]`);
+      label.classList.add('loaded');
+      label.querySelector('.button-icon').innerHTML = '✓';
     }
-  });
+
+    combine(images.player, images.hat, skin, function (player, hat) {
+      renderWallpaper(player);
+      if (hat) {
+        ctx.drawImage(hat, 0, 0);
+      }
+    });
+  }
 }
 
 function combine(img1, img2, skin, callback) {
