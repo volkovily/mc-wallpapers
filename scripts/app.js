@@ -79,6 +79,18 @@ function compose() {
   const container = document.createElement("div");
   for (let name in images) container.appendChild(images[name]);
 
+  const background = images.background;
+  const backgroundWidth = background.width;
+  const backgroundHeight = background.height;
+
+  for (let name in images) {
+    const img = images[name];
+    if (img.width !== backgroundWidth || img.height !== backgroundHeight) {
+      alert(`Error: "${name}" must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
+      return;
+    }
+  }
+
   combine(images.player, images.hat, skin, function (player, hat) {
     renderWallpaper(player);
     if (hat) {
