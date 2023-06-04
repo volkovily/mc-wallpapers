@@ -26,7 +26,7 @@ mojangSkinButton.addEventListener("click", () => {
   if (playerName.trim() !== "") {
     getUUID(playerName).then((uuid) => {
       loadMojangSkin(uuid);
-      addSkinToHistory(uuid);
+      addSkinToHistory(uuid, loadMojangSkin);
     });
   }
 });

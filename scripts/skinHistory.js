@@ -1,13 +1,15 @@
 const skinHistoryContainer = document.getElementById("skinHistoryContainer");
 const skinHistoryMap = new Map();
 
-export function addSkinToHistory(uuid) {
-  if (!uuid) return
+export function addSkinToHistory(uuid, callback) {
+  if (!uuid) {
+    return;
+  }
 
   if (skinHistoryMap.has(uuid)) {
     moveExistingItemToTop(uuid);
   } else {
-    createAndInsertNewItem(uuid);
+    createAndInsertNewItem(uuid, callback);
   }
 }
 
@@ -16,26 +18,26 @@ function moveExistingItemToTop(uuid) {
   skinHistoryContainer.insertBefore(existingItem, skinHistoryContainer.firstChild);
 }
 
-function createAndInsertNewItem(uuid) {
-  const historyItem = createHistoryItem(uuid);
+function createAndInsertNewItem(uuid, callback) {
+  const historyItem = createHistoryItem(uuid, callback);
   skinHistoryContainer.insertBefore(historyItem, skinHistoryContainer.firstChild);
   skinHistoryMap.set(uuid, historyItem);
 }
 
-function createHistoryItem(uuid) {
+function createHistoryItem(uuid, callback) {
   const historyItem = document.createElement("div");
   historyItem.classList.add("history-item");
-  const skinPreviewBtn = createSkinPreviewButton(uuid);
+  const skinPreviewBtn = createSkinPreviewButton(uuid, callback);
   historyItem.appendChild(skinPreviewBtn);
   return historyItem;
 }
 
-function createSkinPreviewButton(uuid) {
+function createSkinPreviewButton(uuid, callback) {
   const skinPreviewBtn = document.createElement("button");
   skinPreviewBtn.classList.add("skin-preview-button");
   skinPreviewBtn.style.backgroundImage = `url(https://visage.surgeplay.com/front/128/${uuid})`;
   skinPreviewBtn.addEventListener("click", () => {
-    loadMojangSkin(uuid);
+    callback(uuid);
   });
   return skinPreviewBtn;
 }
