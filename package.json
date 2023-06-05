@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/volkovily/mc-wallpapers/issues"
   },
-  "homepage": "https://github.com/volkovily/mc-wallpapers#readme"
+  "homepage": "https://github.com/volkovily/mc-wallpapers#readme",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
 }
