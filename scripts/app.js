@@ -146,27 +146,35 @@ exportButton.addEventListener("click", () => {
   download(jsonData, "wp_template.json");
 });
 
-importButton.addEventListener("change", (event) => {
+importButton.addEventListener("change", async (event) => {
   const file = event.target.files[0];
   const reader = new FileReader();
-  reader.onload = (event) => {
-    const jsonData = event.target.result;
-    const template = JSON.parse(jsonData);
 
-    images.background = new Image();
-    images.player = new Image();
-    images.hat = new Image();
+  const jsonData = await new Promise((resolve, reject) => {
+    reader.onload = (event) => resolve(event.target.result);
+    reader.onerror = (event) => reject(event.error);
+    reader.readAsText(file);
+  });
 
-    images.background.onload = () => {
-      images.player.onload = () => {
-        images.hat.onload = () => {
-          compose();
-        };
-        images.hat.src = template.hat;
-      };
-      images.player.src = template.player;
-    };
-    images.background.src = template.background;
+  const template = JSON.parse(jsonData);
+
+  const loadImages = (src) => {
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.src = src;
+    });
   };
-  reader.readAsText(file);
+
+  const [backgroundImage, playerImage, hatImage] = await Promise.all([
+    loadImages(template.background),
+    loadImages(template.player),
+    loadImages(template.hat)
+  ]);
+
+  images.background = backgroundImage;
+  images.player = playerImage;
+  images.hat = hatImage;
+
+  compose();
 });
