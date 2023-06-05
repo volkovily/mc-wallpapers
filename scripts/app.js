@@ -20,6 +20,7 @@ const OLD_FORMAT_HEIGHT = 32;
 const mojangSkinButton = document.getElementById("getMojangSkinBtn");
 const skinInput = document.getElementById("skinInput");
 const playerNameInput = document.getElementById("playerNameInput");
+const exportButton = document.getElementById("exportBtn");
 
 mojangSkinButton.addEventListener("click", () => {
   const playerName = playerNameInput.value;
@@ -131,3 +132,14 @@ function renderWallpaper(player) {
   ctx.drawImage(images.background, 0, 0);
   ctx.drawImage(player, 0, 0);
 }
+
+exportButton.addEventListener("click", () => {
+  const template = {
+    background: convertImageToBase64(images.background),
+    player: convertImageToBase64(images.player),
+    hat: convertImageToBase64(images.hat)
+  };
+
+  const jsonData = JSON.stringify(template);
+  download(jsonData, "wp_template.json");
+});
