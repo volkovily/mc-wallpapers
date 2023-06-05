@@ -1,6 +1,7 @@
 import { merge } from "./imageUtils.js";
 import { getUUID } from "./uuid.js";
 import { addSkinToHistory } from "./skinHistory.js";
+import { convertImageToBase64, download } from "./fileUtils.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
