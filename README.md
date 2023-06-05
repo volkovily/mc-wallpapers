@@ -1,4 +1,4 @@
-# [mc-wallpapers](volkovily.github.io/mc-wallpapers/)
+# [mc-wallpapers](https://volkovily.github.io/mc-wallpapers/)
 
 **mc-wallpapers** is a web application where you can create and use personalized Minecraft wallpapers by applying any Minecraft skin to the image.
 
