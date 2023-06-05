@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <h1>mc-wallpaper</h1>
+    <img src="src/logo/mc-wallpapers.png" class="logo">
     <div id="button-container">
       <label for="backgroundInput" class="custom-file-input" title="Import background">
         <span class="button-icon">+</span>
@@ -29,6 +29,8 @@
       </div>
       <canvas id="canvas"></canvas>
     </div>
+    <button id="exportBtn">Export</button>
+    <input type="file" id="importBtn" accept=".json">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
     <script type="module" src="scripts/app.js"></script>
   </body>

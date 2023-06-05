@@ -1,6 +1,7 @@
 import { merge } from "./imageUtils.js";
 import { getUUID } from "./uuid.js";
 import { addSkinToHistory } from "./skinHistory.js";
+import { convertImageToBase64, download } from "./fileUtils.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -20,6 +21,8 @@ const OLD_FORMAT_HEIGHT = 32;
 const mojangSkinButton = document.getElementById("getMojangSkinBtn");
 const skinInput = document.getElementById("skinInput");
 const playerNameInput = document.getElementById("playerNameInput");
+const exportButton = document.getElementById("exportBtn");
+const importButton = document.getElementById("importBtn");
 
 mojangSkinButton.addEventListener("click", () => {
   const playerName = playerNameInput.value;
@@ -131,3 +134,47 @@ function renderWallpaper(player) {
   ctx.drawImage(images.background, 0, 0);
   ctx.drawImage(player, 0, 0);
 }
+
+exportButton.addEventListener("click", () => {
+  const template = {
+    background: convertImageToBase64(images.background),
+    player: convertImageToBase64(images.player),
+    hat: convertImageToBase64(images.hat)
+  };
+
+  const jsonData = JSON.stringify(template);
+  download(jsonData, "wp_template.json");
+});
+
+importButton.addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  const jsonData = await new Promise((resolve, reject) => {
+    reader.onload = (event) => resolve(event.target.result);
+    reader.onerror = (event) => reject(event.error);
+    reader.readAsText(file);
+  });
+
+  const template = JSON.parse(jsonData);
+
+  const loadImages = (src) => {
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.src = src;
+    });
+  };
+
+  const [backgroundImage, playerImage, hatImage] = await Promise.all([
+    loadImages(template.background),
+    loadImages(template.player),
+    loadImages(template.hat)
+  ]);
+
+  images.background = backgroundImage;
+  images.player = playerImage;
+  images.hat = hatImage;
+
+  compose();
+});
