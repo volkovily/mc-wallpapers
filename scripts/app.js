@@ -21,6 +21,7 @@ const mojangSkinButton = document.getElementById("getMojangSkinBtn");
 const skinInput = document.getElementById("skinInput");
 const playerNameInput = document.getElementById("playerNameInput");
 const exportButton = document.getElementById("exportBtn");
+const importButton = document.getElementById("importBtn");
 
 mojangSkinButton.addEventListener("click", () => {
   const playerName = playerNameInput.value;
@@ -142,4 +143,29 @@ exportButton.addEventListener("click", () => {
 
   const jsonData = JSON.stringify(template);
   download(jsonData, "wp_template.json");
+});
+
+importButton.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const jsonData = event.target.result;
+    const template = JSON.parse(jsonData);
+
+    images.background = new Image();
+    images.player = new Image();
+    images.hat = new Image();
+
+    images.background.onload = () => {
+      images.player.onload = () => {
+        images.hat.onload = () => {
+          compose();
+        };
+        images.hat.src = template.hat;
+      };
+      images.player.src = template.player;
+    };
+    images.background.src = template.background;
+  };
+  reader.readAsText(file);
 });
