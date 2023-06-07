@@ -21,7 +21,9 @@ function showLoadingAnimation() {
   loading.style.display = "block";
 
   return new Promise((resolve) => {
-    loading.style.display = "none";
     resolve();
+    setTimeout(() => {
+      loading.style.display = "none"; 
+    }, 2000);
   });
 }
