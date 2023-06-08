@@ -186,3 +186,19 @@ h1 {
   height: auto;
   max-height: 100px;
 }
+
+#renderedContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#saveBtn {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #FFA500;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
