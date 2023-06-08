@@ -25,14 +25,6 @@ const errorMessage = document.getElementById("errorMessage");
 const exportButton = document.getElementById("exportBtn");
 const importButton = document.getElementById("importBtn");
 
-function showError(message) {
-  errorMessage.textContent = message;
-}
-
-function clearError() {
-  errorMessage.textContent = "‎";
-}
-
 mojangSkinButton.addEventListener("click", () => {
   clearError();
   const playerName = playerNameInput.value;
@@ -94,7 +86,7 @@ function checkImageSize(images, backgroundWidth, backgroundHeight) {
   for (let name in images) {
     const img = images[name];
     if (img.width !== backgroundWidth || img.height !== backgroundHeight) {
-      alert(`Error: "${name}" must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
+      showError(`Error: "${name}" image must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
       return false;
     }
   }
@@ -173,6 +165,11 @@ importButton.addEventListener("change", async (event) => {
 
   const template = JSON.parse(jsonData);
 
+  if (!template.background && !template.player) {
+    showError("Error: Invalid template file");
+    return;
+  }
+
   const loadImages = (src) => {
     return new Promise((resolve) => {
       const image = new Image();
@@ -191,5 +188,14 @@ importButton.addEventListener("change", async (event) => {
   images.player = playerImage;
   images.hat = hatImage;
 
+  clearError();
   compose();
 });
+
+function showError(message) {
+  errorMessage.textContent = message;
+}
+
+function clearError() {
+  errorMessage.textContent = "‎";
+}
