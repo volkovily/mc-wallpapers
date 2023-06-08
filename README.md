@@ -19,3 +19,4 @@ $ npm install
 ```bash
 $ http-server
 ```
+By using `mc-wallpapers` locally you can access pre-made wallpaper templates in `/templates` folder.

@@ -22,6 +22,7 @@ const mojangSkinButton = document.getElementById("getMojangSkinBtn");
 const skinInput = document.getElementById("skinInput");
 const playerNameInput = document.getElementById("playerNameInput");
 const errorMessage = document.getElementById("errorMessage");
+const saveButton = document.getElementById("saveBtn");
 const exportButton = document.getElementById("exportBtn");
 const importButton = document.getElementById("importBtn");
 
@@ -145,6 +146,17 @@ function renderWallpaper(player) {
   ctx.drawImage(images.background, 0, 0);
   ctx.drawImage(player, 0, 0);
 }
+
+saveButton.addEventListener("click", () => {
+  canvas.toBlob((blob) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "mc-wallpaper.png";
+    link.click();
+    URL.revokeObjectURL(url);
+  });
+});
 
 exportButton.addEventListener("click", () => {
   const template = {
