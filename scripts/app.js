@@ -107,7 +107,11 @@ function compose() {
   const backgroundWidth = background.width;
   const backgroundHeight = background.height;
 
-  let allImagesCorrectSize = checkImageSize(images, backgroundWidth, backgroundHeight);
+  let allImagesCorrectSize = checkImageSize(
+    images,
+    backgroundWidth,
+    backgroundHeight
+  );
 
   if (allImagesCorrectSize) {
     for (let name in images) {
@@ -240,4 +244,63 @@ function showError(message) {
 
 function clearError() {
   errorMessage.textContent = "‎";
+}
+
+fetchTemplateFiles();
+
+function fetchTemplateFiles() {
+  fetch("templates/")
+    .then((response) => response.text())
+    .then((html) => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const links = doc.querySelectorAll("a");
+
+      const templateMenu = document.getElementById("templateMenu");
+      const templatePromises = [];
+
+      links.forEach((link) => {
+        const templateFile = link.getAttribute("href");
+        if (templateFile.endsWith(".json")) {
+          const templatePromise = fetch(`templates/${templateFile}`)
+            .then((response) => response.json())
+            .then((template) => {
+              const templateButton = createTemplateButton(template);
+              templateMenu.appendChild(templateButton);
+            })
+            .catch((error) => {
+              console.error(`Failed to load template file: ${templateFile}`, error);
+            });
+
+          templatePromises.push(templatePromise);
+        }
+      });
+
+      Promise.all(templatePromises)
+        .then(() => {
+          console.log("All templates loaded successfully");
+        })
+        .catch((error) => {
+          console.error("Failed to load some templates", error);
+        });
+    })
+    .catch((error) => {
+      showError(error);
+    });
+}
+
+function createTemplateButton(template) {
+  const templateButton = document.createElement("button");
+  templateButton.classList.add("template-preview");
+
+  const templateImg = new Image();
+  templateImg.src = template.background;
+  templateImg.classList.add("template-preview-image");
+  templateButton.appendChild(templateImg);
+
+  templateButton.addEventListener("click", () => {
+    applyTemplate(template);
+  });
+
+  return templateButton;
 }
