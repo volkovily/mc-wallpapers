@@ -23,6 +23,7 @@ const skinInput = document.getElementById("skinInput");
 const playerNameInput = document.getElementById("playerNameInput");
 const errorMessage = document.getElementById("errorMessage");
 const saveButton = document.getElementById("saveBtn");
+const copyButton = document.getElementById("copyBtn");
 const exportButton = document.getElementById("exportBtn");
 const importButton = document.getElementById("importBtn");
 
@@ -155,6 +156,12 @@ saveButton.addEventListener("click", () => {
     link.download = "mc-wallpaper.png";
     link.click();
     URL.revokeObjectURL(url);
+  });
+});
+
+copyButton.addEventListener("click", () => {
+  canvas.toBlob((blob) => {
+    navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
   });
 });
 
