@@ -213,19 +213,18 @@ importButton.addEventListener("change", async (event) => {
     return;
   }
 
-  const loadImages = (src) => {
-    return new Promise((resolve) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.src = src;
+  const loadImages = (template) => {
+    const imagePromises = Object.values(template).map((src) => {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.src = src;
+      });
     });
+    return Promise.all(imagePromises);
   };
 
-  const [backgroundImage, playerImage, hatImage] = await Promise.all([
-    loadImages(template.background),
-    loadImages(template.player),
-    loadImages(template.hat)
-  ]);
+  const [backgroundImage, playerImage, hatImage] = await loadImages(template);
 
   images.background = backgroundImage;
   images.player = playerImage;
