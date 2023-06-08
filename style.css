@@ -192,7 +192,9 @@ h1 {
   justify-content: center;
   align-items: center;
 }
-#saveBtn {
+
+.my-button {
+  margin-left: 10px;
   margin-top: 10px;
   padding: 10px;
   background-color: #FFA500;
