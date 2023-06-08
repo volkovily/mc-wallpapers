@@ -150,8 +150,51 @@ exportButton.addEventListener("click", () => {
   };
 
   const jsonData = JSON.stringify(template);
-  download(jsonData, "wp_template.json");
+  const fileName = "template_" + Date.now() + ".json";
+  download(jsonData, fileName);
+
+  const templateButton = document.createElement("button");
+  templateButton.classList.add("template-preview");
+
+  const templateImg = new Image();
+  templateImg.src = images.background.src;
+  templateImg.classList.add("template-preview-image");
+  templateButton.appendChild(templateImg);
+
+  templateButton.addEventListener("click", () => {
+    applyTemplate(template);
+  });
+
+  const templateMenu = document.getElementById("templateMenu");
+  templateMenu.appendChild(templateButton);
 });
+
+function applyTemplate(template) {
+  const loadImages = (src) => {
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.src = src;
+    });
+  };
+
+  Promise.all([
+    loadImages(template.background),
+    loadImages(template.player),
+    loadImages(template.hat)
+  ])
+    .then(([backgroundImage, playerImage, hatImage]) => {
+      images.background = backgroundImage;
+      images.player = playerImage;
+      images.hat = hatImage;
+      clearError();
+      compose();
+    })
+    .catch((error) => {
+      showError("Error: Failed to load template images");
+      console.error(error);
+    });
+}
 
 importButton.addEventListener("change", async (event) => {
   const file = event.target.files[0];
