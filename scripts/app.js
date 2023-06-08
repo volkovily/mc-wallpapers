@@ -25,14 +25,6 @@ const errorMessage = document.getElementById("errorMessage");
 const exportButton = document.getElementById("exportBtn");
 const importButton = document.getElementById("importBtn");
 
-function showError(message) {
-  errorMessage.textContent = message;
-}
-
-function clearError() {
-  errorMessage.textContent = "‎";
-}
-
 mojangSkinButton.addEventListener("click", () => {
   clearError();
   const playerName = playerNameInput.value;
@@ -94,7 +86,7 @@ function checkImageSize(images, backgroundWidth, backgroundHeight) {
   for (let name in images) {
     const img = images[name];
     if (img.width !== backgroundWidth || img.height !== backgroundHeight) {
-      alert(`Error: "${name}" must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
+      showError(`Error: "${name}" image must have the same size as the background image (${backgroundWidth}x${backgroundHeight})`);
       return false;
     }
   }
@@ -115,7 +107,11 @@ function compose() {
   const backgroundWidth = background.width;
   const backgroundHeight = background.height;
 
-  let allImagesCorrectSize = checkImageSize(images, backgroundWidth, backgroundHeight);
+  let allImagesCorrectSize = checkImageSize(
+    images,
+    backgroundWidth,
+    backgroundHeight
+  );
 
   if (allImagesCorrectSize) {
     for (let name in images) {
@@ -158,8 +154,51 @@ exportButton.addEventListener("click", () => {
   };
 
   const jsonData = JSON.stringify(template);
-  download(jsonData, "wp_template.json");
+  const fileName = "template_" + Date.now() + ".json";
+  download(jsonData, fileName);
+
+  const templateButton = document.createElement("button");
+  templateButton.classList.add("template-preview");
+
+  const templateImg = new Image();
+  templateImg.src = images.background.src;
+  templateImg.classList.add("template-preview-image");
+  templateButton.appendChild(templateImg);
+
+  templateButton.addEventListener("click", () => {
+    applyTemplate(template);
+  });
+
+  const templateMenu = document.getElementById("templateMenu");
+  templateMenu.appendChild(templateButton);
 });
+
+function applyTemplate(template) {
+  const loadImages = (src) => {
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.src = src;
+    });
+  };
+
+  Promise.all([
+    loadImages(template.background),
+    loadImages(template.player),
+    loadImages(template.hat)
+  ])
+    .then(([backgroundImage, playerImage, hatImage]) => {
+      images.background = backgroundImage;
+      images.player = playerImage;
+      images.hat = hatImage;
+      clearError();
+      compose();
+    })
+    .catch((error) => {
+      showError("Error: Failed to load template images");
+      console.error(error);
+    });
+}
 
 importButton.addEventListener("change", async (event) => {
   const file = event.target.files[0];
@@ -173,23 +212,95 @@ importButton.addEventListener("change", async (event) => {
 
   const template = JSON.parse(jsonData);
 
-  const loadImages = (src) => {
-    return new Promise((resolve) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.src = src;
+  if (!template.background && !template.player) {
+    showError("Error: Invalid template file");
+    return;
+  }
+
+  const loadImages = (template) => {
+    const imagePromises = Object.values(template).map((src) => {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.src = src;
+      });
     });
+    return Promise.all(imagePromises);
   };
 
-  const [backgroundImage, playerImage, hatImage] = await Promise.all([
-    loadImages(template.background),
-    loadImages(template.player),
-    loadImages(template.hat)
-  ]);
+  const [backgroundImage, playerImage, hatImage] = await loadImages(template);
 
   images.background = backgroundImage;
   images.player = playerImage;
   images.hat = hatImage;
 
+  clearError();
   compose();
 });
+
+function showError(message) {
+  errorMessage.textContent = message;
+}
+
+function clearError() {
+  errorMessage.textContent = "‎";
+}
+
+fetchTemplateFiles();
+
+function fetchTemplateFiles() {
+  fetch("templates/")
+    .then((response) => response.text())
+    .then((html) => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const links = doc.querySelectorAll("a");
+
+      const templateMenu = document.getElementById("templateMenu");
+      const templatePromises = [];
+
+      links.forEach((link) => {
+        const templateFile = link.getAttribute("href");
+        if (templateFile.endsWith(".json")) {
+          const templatePromise = fetch(`templates/${templateFile}`)
+            .then((response) => response.json())
+            .then((template) => {
+              const templateButton = createTemplateButton(template);
+              templateMenu.appendChild(templateButton);
+            })
+            .catch((error) => {
+              console.error(`Failed to load template file: ${templateFile}`, error);
+            });
+
+          templatePromises.push(templatePromise);
+        }
+      });
+
+      Promise.all(templatePromises)
+        .then(() => {
+          console.log("All templates loaded successfully");
+        })
+        .catch((error) => {
+          console.error("Failed to load some templates", error);
+        });
+    })
+    .catch((error) => {
+      showError(error);
+    });
+}
+
+function createTemplateButton(template) {
+  const templateButton = document.createElement("button");
+  templateButton.classList.add("template-preview");
+
+  const templateImg = new Image();
+  templateImg.src = template.background;
+  templateImg.classList.add("template-preview-image");
+  templateButton.appendChild(templateImg);
+
+  templateButton.addEventListener("click", () => {
+    applyTemplate(template);
+  });
+
+  return templateButton;
+}
