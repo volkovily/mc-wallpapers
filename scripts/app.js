@@ -21,16 +21,31 @@ const OLD_FORMAT_HEIGHT = 32;
 const mojangSkinButton = document.getElementById("getMojangSkinBtn");
 const skinInput = document.getElementById("skinInput");
 const playerNameInput = document.getElementById("playerNameInput");
+const errorMessage = document.getElementById("errorMessage");
 const exportButton = document.getElementById("exportBtn");
 const importButton = document.getElementById("importBtn");
 
+function showError(message) {
+  errorMessage.textContent = message;
+}
+
+function clearError() {
+  errorMessage.textContent = "‎";
+}
+
 mojangSkinButton.addEventListener("click", () => {
+  clearError();
   const playerName = playerNameInput.value;
   if (playerName.trim() !== "") {
     getUUID(playerName).then((uuid) => {
       loadMojangSkin(uuid);
       addSkinToHistory(uuid, loadMojangSkin);
-    });
+    })
+      .catch((error) => {
+        showError(error);
+      });
+  } else {
+    showError("Please enter a valid username");
   }
 });
 
