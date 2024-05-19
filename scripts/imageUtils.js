@@ -36,3 +36,13 @@ function resizeSkin(image, factor) {
   ctx.drawImage(image, 0, 0);
   return canvas;
 }
+
+function createSolidColorMask(image, color) {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = image.width;
+  canvas.height = image.height;
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  return canvas;
+}
