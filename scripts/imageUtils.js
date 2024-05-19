@@ -1,9 +1,20 @@
 const RGBA_VALUES = 4;
 const MAX_PIXEL_VALUE = 255;
 
-export function merge(uvmap, skin, onRender) {
-  let caman = Caman(uvmap, function () {
+export function merge(uvmap, skin, illumination, onRender) {
+  const playerMask = createSolidColorMask(uvmap, "red");
+
+  var caman = Caman(uvmap, function () {
+    this.newLayer(function () {
+      this.setBlendingMode("multiply"); 
+      this.overlayImage(playerMask);
+    });
+
     this.remap(skin, uvmap.u || "r", uvmap.v || "g");
+      this.newLayer(function () {
+        this.setBlendingMode("multiply");
+        this.overlayImage(illumination);
+      });
     this.render(function () {
       onRender(caman.canvas);
     });
@@ -34,5 +45,15 @@ function resizeSkin(image, factor) {
   ctx.imageSmoothingEnabled = false;
   ctx.scale(factor, factor);
   ctx.drawImage(image, 0, 0);
+  return canvas;
+}
+
+function createSolidColorMask(image, color) {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = image.width;
+  canvas.height = image.height;
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   return canvas;
 }
