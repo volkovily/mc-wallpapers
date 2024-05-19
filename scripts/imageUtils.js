@@ -1,7 +1,7 @@
 const RGBA_VALUES = 4;
 const MAX_PIXEL_VALUE = 255;
 
-export function merge(uvmap, skin, onRender) {
+export function merge(uvmap, skin, illumination, onRender) {
   const playerMask = createSolidColorMask(uvmap, "red");
 
   var caman = Caman(uvmap, function () {
@@ -11,6 +11,10 @@ export function merge(uvmap, skin, onRender) {
     });
 
     this.remap(skin, uvmap.u || "r", uvmap.v || "g");
+      this.newLayer(function () {
+        this.setBlendingMode("multiply");
+        this.overlayImage(illumination);
+      });
     this.render(function () {
       onRender(caman.canvas);
     });

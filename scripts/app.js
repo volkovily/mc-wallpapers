@@ -130,9 +130,9 @@ function compose() {
 }
 
 function combine(img1, img2, skin, callback) {
-  merge(img1, skin, function (player) {
+  merge(img1, skin, images.background, function (player) {
     if (img2) {
-      merge(img2, skin, function (hat) {
+      merge(img2, skin, images.background, function (hat) {
         callback(player, hat);
       });
     } else {
